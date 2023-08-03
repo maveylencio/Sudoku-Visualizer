@@ -93,24 +93,22 @@ def solve(grid, row, col):
 
     if grid[row][col] > 0:
         print("Cell ({}, {}) already filled with {}".format(row, col, grid[row][col]))         
-        input("Press Enter to continue...")
+        #input("Press Enter to continue...")
         return solve(grid, row, col + 1)
 
     for num in range(1, 10):
+        print('-------------------------------------------')
         print("Loop: {} at ({}, {})".format(num, row, col))
-        input("Press Enter to continue...")
         
         if is_valid_move(grid, row, col, num):
             grid[row][col] = num
             print("Placing {} at ({}, {})".format(num, row, col))
-            input("Press Enter to continue...")
+           #input("Press Enter to continue...")
             if solve(grid, row, col + 1):
                 return True
 
         print("Cannot place {} at ({}, {})".format(num, row, col))
-        print(f'row:{row},col:{col}')
-        print(f'value of grid[row][col]:{grid[row][col]}')
-        input("Press Enter to continue...")
+
         grid[row][col] = 0
     print('return false')
     return False
