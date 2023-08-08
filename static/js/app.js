@@ -32,7 +32,7 @@ for(let i=0;i<9;i++){
 
             let grid = getallvalue()
             let isvalid = is_valid_move(grid,inputRow,inputCol,inputValue)
-
+            console.log(grid)
             if(isvalid){
                 console.log(`valid number: ${inputValue}`)
                 changeClass(e.target,'valid','col')
@@ -58,17 +58,17 @@ const speedTxt = document.getElementById('speedbar')
 const visualizeBtn = document.getElementById('visualize')
 
 title.addEventListener('click',function(){
-    location.reload();
+    location.reload()
 })
 
 generateBtn.addEventListener('click',function(){
     console.log('generate puzzle')
-    
 })
 
 clearBtn.addEventListener('click',function(){
     clearPuzzle()
 })
+
 
 dropdownItems.forEach(speed =>{
     speed.addEventListener('click',function(e){
@@ -92,11 +92,11 @@ function getallvalue(){
         grid.push([]);
     }
     for(i=0;i<inputs.length;i++){
-        var row = Math.floor(i/9)
-        var col = Math.floor(i%9)
+        let row = Math.floor(i/9)
+        let col = Math.floor(i%9)
         grid[row][col] = inputs[i].value
     }
-
+    
     return grid
 }
 

@@ -79,6 +79,7 @@ sudoku_grid =  [[9, 4, 0, 0, 3, 1, 0, 0, 7],
                 [0, 0, 0, 0, 0, 0, 0, 7, 0]]
 
 
+
 import time
 
 def solve(grid, row, col):
