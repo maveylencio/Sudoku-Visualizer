@@ -44,20 +44,18 @@ grid.forEach((row,rowIdx)=>{
             const inputCol = e.target.dataset.col
 
             if(inputValue===''){
-                changeClass(e.target,'col','valid')
+                removeClass(e.target)
                 return
             }
 
             let isvalid = is_valid_move(grid,inputRow,inputCol,inputValue)
             if(isvalid){
-                //console.log(`valid number: ${inputValue}`)
-                changeClass(e.target,'valid','col')
+                addClass(e.target,'valid')
             }
             else if(!isvalid){
-                //console.log(`invalid number: ${inputValue}`)
-                changeClass(e.target,'invalid','col')
+                addClass(e.target,'invalid')
                 setTimeout(function() {
-                    changeClass(e.target,'col','invalid')
+                    removeClass(e.target)
                     e.target.value=''
                 }, 500);
             }
@@ -78,27 +76,34 @@ title.addEventListener('click',function(){
 })
 
 generateBtn.addEventListener('click',function(){
-    clearPuzzle(grid)
-    newgrid = convertArray(grid)
+    let  solvesudoku = false
+    let requestData = {
+        solvesudoku:solvesudoku
+    }
+
     fetch('/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(newgrid)
+        body: JSON.stringify(requestData)
         })
         .then(response => response.json())
         .then(data => {
             console.log('Response:', data.message);
-            grid.forEach((row,rowIdx)=>{
-                row.forEach((td,colIdx)=>{
-                    td.children[0].value = data.board[rowIdx][colIdx]
-                    if(data.board[rowIdx][colIdx]!=''){
-                        changeClass(td.children[0],'valid','col')
-                    }
-                    
+            if(data.board){
+                grid.forEach((row,rowIdx)=>{
+                    row.forEach((td,colIdx)=>{
+                        td.children[0].value = data.board[rowIdx][colIdx]
+                        if(data.board[rowIdx][colIdx]!=''){
+                            addClass(td.children[0],'valid','col')
+                        }
+                        else{
+                            addClass(td.children[0],'col','valid')
+                        }
+                    })
                 })
-            })
+            }
         })
         .catch(error => {
             console.error('Error:', error);
@@ -108,7 +113,6 @@ generateBtn.addEventListener('click',function(){
 clearBtn.addEventListener('click',function(){
     clearPuzzle(grid)
 })
-
 
 dropdownItems.forEach(speed =>{
     speed.addEventListener('click',function(e){
@@ -121,6 +125,27 @@ dropdownItems.forEach(speed =>{
 
 visualizeBtn.addEventListener('click',function(){
     console.log('visualize')
+    let newgrid = convertArray(grid)
+    let solvesudoku = true
+    let requestData = {
+        grid:newgrid,
+        solvesudoku:solvesudoku,
+    }
+
+    fetch('/',{
+        method:'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data =>{  
+
+    })
+    .catch(error =>{
+        console.log(error)
+    })
     
 })
 
@@ -129,7 +154,7 @@ const convertArray = (grid) =>{
     grid.forEach((row,rowIdx)=>{
         let new_row = []
         row.forEach((td,colIdx)=>{
-            new_row.push(td.children[0].value)
+            new_row.push(parseInt(td.children[0].value === ''?0:td.children[0].value))
         })
         new_grid.push(new_row)
     })
@@ -166,17 +191,23 @@ const is_valid_move = (grid,row,col,number) =>{
     return true
 }
 
-const changeClass = (input,add,remove) =>{
-    input.classList.add(add)
-    input.classList.remove(remove)
+const addClass = (input,add) =>{
+    input.classList.add(add) 
 }
 
-const  clearPuzzle = (grid) =>{
+const removeClass = (input) =>{
+    input.removeAttribute('class');
+}
+
+const clearPuzzle = (grid) =>{
     grid.forEach((row,rowIdx)=>{
         row.forEach((td,colIdx)=>{
             td.children[0].value = ''
-            changeClass(td.children[0],'col','valid')
+            removeClass(td.children[0])
         })
     })
 }
 
+const animation = (grid) =>{
+
+}

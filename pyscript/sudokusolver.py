@@ -19,22 +19,29 @@ def is_valid_move(grid,row,col,number):
     return True
 
 
-def solve(grid,row,col):
+def solve(grid,row,col,animation):
+    animation = []
     if col==9:
-        if row==8:
-            return True
         row+=1
         col=0
+        if row==9:
+            return animation
+        
     #check if grid value is not equal to 0
     if grid[row][col]>0:
-        return solve(grid,row,col+1)
+        return solve(grid,row,col+1,animation)
     #try all possible number with forloop
     for num in range(1,10):
         if is_valid_move(grid,row,col,num):
             grid[row][col] = num
-            if(solve(grid,row,col+1)):
-                return True
+            animation.append({'num':str(num),'row':row,'col':col,'class':'valid'})
+            if(solve(grid,row,col+1,animation)):
+                return animation 
+        animation.append({'num':num,'row':row,'col':col,'class':'invalid'})
         grid[row][col] = 0
-
+        animation.append({'num':'','row':row,'col':col,'class':'remove'})
     return False
+
+
+
 

@@ -1,5 +1,6 @@
 from flask import Flask, render_template ,request,jsonify
 from pyscript.generate import generate_puzzle
+from pyscript.sudokusolver import solve
 app = Flask(__name__)
 
 
@@ -12,13 +13,17 @@ def index():
     if(request.method =='POST'):
         #newgrid = request.json
 
-        new_grid = request.json 
-        sudokuboard = generate_puzzle() 
-
-        response_data = {'message': 'Puzzle Generated','board':sudokuboard}
-
-        return jsonify(response_data) 
-
+        
+        solvesudoku = request.json.get('solvesudoku')
+        if solvesudoku == False:
+            board = generate_puzzle()
+            response_data = {'message': 'Puzzle Generated','board':board}
+            return jsonify(response_data) 
+        elif solvesudoku == True:
+            board = request.json.get('grid')
+            response_data = {'message': 'Puzzle Solved'}
+            return jsonify(response_data)
+            
 
     return render_template('index.html')
 
