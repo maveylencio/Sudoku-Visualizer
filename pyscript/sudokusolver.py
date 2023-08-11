@@ -20,7 +20,6 @@ def is_valid_move(grid,row,col,number):
 
 
 def sudokusolver(grid,row,col,animation):
-    animation = []
     if col==9:
         row+=1
         col=0
@@ -34,7 +33,7 @@ def sudokusolver(grid,row,col,animation):
     for num in range(1,10):
         if is_valid_move(grid,row,col,num):
             grid[row][col] = num
-            animation.append({'value':str(num),'row':row,'col':col,'class':'valid'})
+            animation.append({'value':str(num),'row':row,'col':col,'class':'correct'})
             if(sudokusolver(grid,row,col+1,animation)):
                 return animation 
         animation.append({'value':num,'row':row,'col':col,'class':'invalid'})
@@ -42,10 +41,6 @@ def sudokusolver(grid,row,col,animation):
         animation.append({'value':'','row':row,'col':col,'class':'remove'})
 
     return False
-
-
-
-
 
 
 

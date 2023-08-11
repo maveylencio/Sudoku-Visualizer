@@ -1,6 +1,7 @@
 
 const table = document.querySelector('.table')
-let speed = null
+let speed = 5
+let inprogress = false
 
 
 for(let i=0;i<9;i++){
@@ -76,6 +77,11 @@ title.addEventListener('click',function(){
 })
 
 generateBtn.addEventListener('click',function(){
+    if(inprogress===true){
+        console.log('in progress')
+        return
+    }
+    inprogress=true
     let  solvesudoku = false
     let requestData = {
         solvesudoku:solvesudoku
@@ -96,21 +102,28 @@ generateBtn.addEventListener('click',function(){
                     row.forEach((td,colIdx)=>{
                         td.children[0].value = data.board[rowIdx][colIdx]
                         if(data.board[rowIdx][colIdx]!=''){
-                            addClass(td.children[0],'valid','col')
+                            removeClass(td.children[0])
+                            addClass(td.children[0],'valid')
                         }
                         else{
-                            addClass(td.children[0],'col','valid')
+                            removeClass(td.children[0])
                         }
                     })
                 })
+                inprogress=false
             }
+            
         })
         .catch(error => {
             console.error('Error:', error);
+            inprogress=false
         });
 })
 
 clearBtn.addEventListener('click',function(){
+    if(inprogress===true){
+        return
+    }
     clearPuzzle(grid)
 })
 
@@ -118,12 +131,20 @@ dropdownItems.forEach(speed =>{
     speed.addEventListener('click',function(e){
         e.preventDefault()
         const selectedspeed = speed.textContent.trim();
-        speed = selectedspeed
+        setSpeed(selectedspeed)
         speedTxt.innerHTML = 'Speed:'+selectedspeed
     })
 })
 
-visualizeBtn.addEventListener('click',function(){
+visualizeBtn.addEventListener('click',async function(){
+    if(inprogress===true){
+        console.log('Animation in progress')
+        return
+    }
+    inprogress=true
+    console.log(`inprogress: ${inprogress}`)
+    clearAllCorrect()
+
     console.log('visualize')
     let newgrid = convertArray(grid)
     let solvesudoku = true
@@ -142,16 +163,36 @@ visualizeBtn.addEventListener('click',function(){
     .then(response => response.json())
     .then(data =>{  
         console.log(data.message)
-        console.log(data.animation)
         if(data.animation){
-            animation(grid,data.animation)
+            return animation(grid,data.animation,speed)
         }
     })
+    .then(() => {
+        inprogress = false;
+      })
     .catch(error =>{
         console.log(error)
     })
     
 })
+
+const setSpeed = (spid) =>{
+    switch(spid){
+        case 'Fast':
+            speed = 5
+            break
+        case 'Average':
+            speed = 105
+            break
+        case 'Slow':
+            speed = 205
+            break
+        default:
+            speed= 5
+            break
+    }
+
+}
 
 const convertArray = (grid) =>{
     new_grid = []
@@ -212,18 +253,30 @@ const clearPuzzle = (grid) =>{
     })
 }
 
-const animation = (grid,animation) =>{
-    for(let i=0;animation.length;i++){
-        if(animation[i].class==='valid'){
-            grid[animation[i].row][animation[i].col].td.children[0].td.children[0].value = animation[i].value
-            addClass(grid[animation[i].row][animation[i].col].td.children[0],'valid')
-        }
-        else if(animation[i].class==='invalid'){
-            addClass(grid[animation[i].row][animation[i].col].td.children[0],'invalid')
-        }
-        else if(animation[i].class==='remove'){
-            grid[animation[i].row][animation[i].col].td.children[0].td.children[0].value = animation[i].value
-            removeClass(grid[animation[i].row][animation[i].col].td.children[0])
-        }
-    }
+const clearAllCorrect = async () => {
+    grid.forEach((row,rowIdx)=>{
+        row.forEach((td,colIdx)=>{
+            if(td.children[0].classList.contains('correct')){
+                td.children[0].value = ''
+                removeClass(td.children[0])
+            }
+        })
+    })
 }
+
+const animation = async (grid, animationData, speed) => {
+    for (let i = 0; i < animationData.length; i++) {
+        if (animationData[i].class === 'correct' || animationData[i].class === 'invalid') {
+            grid[animationData[i].row][animationData[i].col].children[0].value = animationData[i].value
+            addClass(grid[animationData[i].row][animationData[i].col].children[0], animationData[i].class);
+        } else {
+            grid[animationData[i].row][animationData[i].col].children[0].value = animationData[i].value
+            removeClass(grid[animationData[i].row][animationData[i].col].children[0]);
+        }
+        
+        await new Promise(resolve => setTimeout(resolve,speed));
+    }
+};
+
+
+

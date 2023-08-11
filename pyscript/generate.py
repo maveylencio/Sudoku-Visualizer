@@ -8,7 +8,7 @@ def shuffle(s):
     return sample(s,len(s))
 
 def removeRandom(board):
-    random_numbers = sample(range(1, 81), k=30) 
+    random_numbers = sample(range(1, 81), k=40) 
     #flatvalue // 9 = row
     #flatvalue % 9 = col
     for x in random_numbers:
@@ -32,12 +32,6 @@ def generate_puzzle():
     board = [[nums[pattern(r,c,offsets)] for c in cols] for r in rows]
     removeRandom(board)
     return board
-    # for line in board:
-    #     print(line)
-    # print('-------------------------------remove random------------------------')
-    # removeRandom(board)
-    # for line in board:
-    #     print(line)
 
 
 
