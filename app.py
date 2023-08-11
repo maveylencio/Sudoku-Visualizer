@@ -1,6 +1,6 @@
 from flask import Flask, render_template ,request,jsonify
 from pyscript.generate import generate_puzzle
-from pyscript.sudokusolver import solve
+from pyscript.sudokusolver import sudokusolver
 app = Flask(__name__)
 
 
@@ -21,7 +21,8 @@ def index():
             return jsonify(response_data) 
         elif solvesudoku == True:
             board = request.json.get('grid')
-            response_data = {'message': 'Puzzle Solved'}
+            solvedboard = sudokusolver(board,0,0,[])
+            response_data = {'message': 'Puzzle Solved','animation':solvedboard}
             return jsonify(response_data)
             
 

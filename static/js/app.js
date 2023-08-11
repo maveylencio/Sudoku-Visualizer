@@ -141,7 +141,11 @@ visualizeBtn.addEventListener('click',function(){
     })
     .then(response => response.json())
     .then(data =>{  
-
+        console.log(data.message)
+        console.log(data.animation)
+        if(data.animation){
+            animation(grid,data.animation)
+        }
     })
     .catch(error =>{
         console.log(error)
@@ -208,6 +212,18 @@ const clearPuzzle = (grid) =>{
     })
 }
 
-const animation = (grid) =>{
-
+const animation = (grid,animation) =>{
+    for(let i=0;animation.length;i++){
+        if(animation[i].class==='valid'){
+            grid[animation[i].row][animation[i].col].td.children[0].td.children[0].value = animation[i].value
+            addClass(grid[animation[i].row][animation[i].col].td.children[0],'valid')
+        }
+        else if(animation[i].class==='invalid'){
+            addClass(grid[animation[i].row][animation[i].col].td.children[0],'invalid')
+        }
+        else if(animation[i].class==='remove'){
+            grid[animation[i].row][animation[i].col].td.children[0].td.children[0].value = animation[i].value
+            removeClass(grid[animation[i].row][animation[i].col].td.children[0])
+        }
+    }
 }
