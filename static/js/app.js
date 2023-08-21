@@ -1,6 +1,6 @@
 
 const table = document.querySelector('.table')
-let speed = 5
+let speed = 20
 let inprogress = false
 
 
@@ -179,16 +179,16 @@ visualizeBtn.addEventListener('click',async function(){
 const setSpeed = (spid) =>{
     switch(spid){
         case 'Fast':
-            speed = 5
+            speed = 20
             break
         case 'Average':
-            speed = 105
+            speed = 120
             break
         case 'Slow':
-            speed = 205
+            speed = 220
             break
         default:
-            speed= 5
+            speed= 20
             break
     }
 
