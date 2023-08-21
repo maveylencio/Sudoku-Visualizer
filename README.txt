@@ -1,1 +1,0 @@
-#Welcome to my Sudoku Solver Visualizer!
